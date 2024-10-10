@@ -17,8 +17,14 @@ body {
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  background: rgb(9,97,121);
+  background: linear-gradient(to top, rgba(9,97,121,1), rgba(59,199,227,1));
+
+  height: 100vh; /* Sets the height to the full viewport */
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin: 0; /* Removes default margin */
+
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -39,4 +45,20 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+.homeDiv {
+  background-color: whitesmoke;
+  margin-top: 30%;
+  width: 80%;
+  height: 500px;
+  margin-left: auto;
+  margin-right: auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  border-radius: 30px;
 }
