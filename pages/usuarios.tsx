@@ -10,7 +10,7 @@ export default function Usuarios() {
         const isAuthenticated = localStorage.getItem('token');
     
         if (!isAuthenticated) {
-          router.push('/');
+          router.push('/home');
         }
       }, [router]);
 
