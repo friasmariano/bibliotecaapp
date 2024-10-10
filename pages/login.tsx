@@ -3,10 +3,9 @@ import Box from "@/components/Box";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock, faKey } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import apiService from "./api/apiService";
 import { useRouter } from 'next/router';
-import { useEffect } from "react";
 
 export default function Login() {
   const [email, setEmail] = useState<string>('');
