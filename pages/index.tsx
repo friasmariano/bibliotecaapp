@@ -5,31 +5,44 @@ import { faLock, faKey } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';
 import { useState } from 'react'
 import apiService from "./api/apiService";
+import { useRouter } from 'next/router';
+import { useEffect } from "react";
 
 export default function Login() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+
+  const router = useRouter();
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
 
     try {
       const response = await apiService.login(email, password);
-      console.log('Login exitoso:', response);
 
       localStorage.setItem('token', 'Bearer ' + response.token);
+
+      router.push('/home');
     }
     catch(err) {
-      console.log('Login failed. Check your credentials.');
+      alert('Login fallido. Verifique sus credenciales.');
     }
   }
 
+  useEffect(() => {
+    const isAuthenticated = localStorage.getItem('token');
+
+    if (isAuthenticated) {
+      router.push('/home');
+    }
+  }, [router]);
+
     return (
         <div className="pagesDiv">
-            <Box />
+          <Box />
 
           <form onSubmit={ handleLogin }>
-            <div className="input-group mb-3" style={ { width: '50%' } }>
+            <div className="input-group mb-3" style={ { width: '100%' } }>
                 <div className="input-group-prepend">
                     <span className="input-group-text" id="basic-addon1">
                         <FontAwesomeIcon icon={ faLock } style={ { fontSize: '1.5em'} } />
@@ -43,7 +56,7 @@ export default function Login() {
                        aria-label="Username" 
                        aria-describedby="basic-addon1" />
             </div>
-            <div className="input-group mb-3" style={ { width: '50%' } }>
+            <div className="input-group mb-3" style={ { width: '100%' } }>
                 <div className="input-group-prepend">
                     <span className="input-group-text" id="basic-addon1">
                         <FontAwesomeIcon icon={ faKey } style={ { fontSize: '1.5em'} } />
@@ -57,7 +70,7 @@ export default function Login() {
                        aria-label="Contraseña" 
                        aria-describedby="basic-addon1" />
             </div>
-            <div>
+            <div style={ {display: 'flex', alignItems: 'center', justifyContent: 'center'} }>
               <button
                 type="submit"
                 className="btn btn-primary"
