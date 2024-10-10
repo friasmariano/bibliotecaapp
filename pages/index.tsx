@@ -35,7 +35,7 @@ export default function Home () {
     try {
       const response = await apiService.getLibroPorTitulo(titulo);
 
-      console.log(response.info);
+      console.log(response.titulo);
 
       openModal();
     }
