@@ -14,6 +14,13 @@ interface LibroResponse {
   fechaPublicacion: string
 }
 
+interface Categoria {
+  id: number;
+  nombre: string;
+}
+
+type CategoriasResponse = Categoria;
+
 class ApiService {
   private api: AxiosInstance;
 
@@ -33,13 +40,42 @@ class ApiService {
   }
 
   async getLibroPorTitulo(titulo: string): Promise<LibroResponse> {
-    const response: AxiosResponse<LibroResponse> = 
-                    await this.api.get(`Libros/GetByTitulo?titulo=${titulo}`);
-    return response.data;
+    try {
+      const encodedTitulo = encodeURIComponent(titulo);
+      const response: AxiosResponse<LibroResponse> = 
+        await this.api.get(`Libros/GetByTitulo?titulo=${encodedTitulo}`);
+      return response.data;
+    } catch (error) {
+      throw new Error('Hubo un error en la búsqueda.');
+    }
+  }
+
+  async getLibroPorCategoria(categoria: string): Promise<LibroResponse> {
+    try {
+      const encodedCategoria = encodeURIComponent(categoria);
+      const response: AxiosResponse<LibroResponse> = 
+        await this.api.get(`Libros/GetByCategoria?categoria=${encodedCategoria}`);
+      return response.data;
+    } catch (error) {
+      throw new Error('Hubo un error en la búsqueda.');
+    }
+  }
+
+  async getCategorias(): Promise<CategoriasResponse> {
+    try {
+      const response: AxiosResponse<CategoriasResponse> = await this.api.get(`Categorias/GetAll`);
+      
+      // console.log('Full Axios Response:', response); 
+  
+      return response.data;
+    } catch (error) {
+      console.error('Hubo un error en la búsqueda:');
+      throw new Error('Hubo un error en la búsqueda.');
+    }
   }
 
 }
 
-const apiService = new ApiService('https://localhost:7191/api');
+const apiService = new ApiService('http://localhost:5267/api');
 
 export default apiService;

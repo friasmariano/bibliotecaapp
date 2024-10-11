@@ -3,10 +3,11 @@ import { useRef, FC, useEffect } from 'react';
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  texto: string;
+  titulo: string;
+  descripcion: string;
 }
 
-const Modal: FC<ModalProps> = ({ isOpen, onClose, texto }) => {
+const Modal: FC<ModalProps> = ({ isOpen, onClose, titulo, descripcion }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   // Show or close the modal depending on the isOpen state
@@ -30,18 +31,22 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose, texto }) => {
       ref={dialogRef}
       style={{
         backgroundColor: 'whitesmoke',
+        color: 'rgba(0,0,0,0.7)',
         margin: 'auto',
         padding: '1rem',
         borderRadius: '10px',
       }}
     >
-      <div className="modal-header">Resumen Libro</div>
+      <div className="modal-header">
+        <h4>Resultados</h4>
+      </div>
       <div className="modal-body">
-        <p style={ { color: 'brown'} }>{texto}</p>
+        <h5>{titulo}</h5>
+        <p>{descripcion}</p>
       </div>
       <div className="modal-footer">
         <button className="close-btn" onClick={handleClose}>
-          Close
+          Cerrar
         </button>
       </div>
     </dialog>

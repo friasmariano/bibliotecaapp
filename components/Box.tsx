@@ -7,7 +7,7 @@ export default function Box () {
             <FontAwesomeIcon icon={faBookOpenReader} style={{ fontSize: 45, color: '#14668c', marginBottom: '15px' }} />
 
             <h5 style={ { marginTop: '20px', marginBottom: '10px' } }>
-                Sistema de Gestion Bibliotecaria
+                Sistema de Gestión Bibliotecaria
             </h5>
 
             <div style={ { height: '2px', width: '30%',
