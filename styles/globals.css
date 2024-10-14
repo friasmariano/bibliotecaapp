@@ -65,7 +65,7 @@ a {
 
 .homeDiv {
   background-color: whitesmoke;
-  margin-top: 20%;
+  margin-top: 15%;
   width: 80%;
   height: 500px;
   margin-left: auto;
@@ -230,4 +230,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   background-color: #0d618e; /* Custom background color for the icon */
   border-radius: 20px;
   padding: 5px;
+}
+
+.customButton {
+  width: 150px;
 }

@@ -22,9 +22,18 @@ interface Categoria {
   nombre: string;
 }
 
-
 type CategoriasResponse = Categoria[];
 
+interface Usuario {
+  Id: number,
+  Nombre: string,
+  Email: string,
+  Rol: string
+}
+
+type UsuariosResponse= Usuario[]
+
+///////////////////////////////////////
 class ApiService {
   private api: AxiosInstance;
 
@@ -86,13 +95,23 @@ class ApiService {
     }
   }
 
-  async getCategorias(): Promise<CategoriasResponse> {
+  async getCategorias(): Promise<CategoriasResponse[]> {
     try {
-      const response: AxiosResponse<CategoriasResponse> = await this.api.get(`Categorias/GetAll`);
+      const response: AxiosResponse<CategoriasResponse[]> = await this.api.get(`Categorias/GetAll`);
       return response.data;
     } catch (error) {
-      console.error('Hubo un error en la búsqueda:');
-      throw new Error('Hubo un error en la búsqueda.');
+      console.error('Hubo un error en la búsqueda', error);
+      return [];
+    }
+  }
+
+  async getAllUsuarios(): Promise<UsuariosResponse[]> {
+    try {
+      const response: AxiosResponse<UsuariosResponse[]> = await this.api.get(`Account/GetAll`);
+      return response.data;
+    } catch (error) {
+      console.error('Hubo un error al recuperar los usuarios', error);
+      return [];
     }
   }
 

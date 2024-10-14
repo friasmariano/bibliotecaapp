@@ -34,8 +34,6 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose, libro }) => {
     onClose();
   };
 
-  console.log('Props libro:', libro);
-
   return (
     <dialog
       ref={dialogRef}

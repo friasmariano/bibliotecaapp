@@ -25,11 +25,6 @@ export default function Home () {
   const [tituloSearch, setTituloSearch] = useState<string>('');
   const [categoria, setCategoria] = useState<string>('');
 
-  interface Categoria {
-    id: number;
-    nombre: string;
-  }
-
   interface LibroContent {
     id: number,
     titulo: string,
@@ -37,6 +32,11 @@ export default function Home () {
     fecha: string,
     autor: string,
     categoria: string
+  }
+
+  interface Categoria {
+    id: number;
+    nombre: string;
   }
   
   type CategoriasResponse = Categoria[];
