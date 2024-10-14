@@ -1,13 +1,21 @@
 import { useRef, FC, useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faS, faSearch} from '@fortawesome/free-solid-svg-icons';
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  titulo: string;
-  descripcion: string;
+  libro: Array<{
+    id: number,
+    titulo: string,
+    descripcion: string,
+    fecha: string,
+    autor: string,
+    categoria: string
+  }>
 }
 
-const Modal: FC<ModalProps> = ({ isOpen, onClose, titulo, descripcion }) => {
+const Modal: FC<ModalProps> = ({ isOpen, onClose, libro }) => {
   const dialogRef = useRef<HTMLDialogElement>(null);
 
   // Show or close the modal depending on the isOpen state
@@ -26,6 +34,8 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose, titulo, descripcion }) => {
     onClose();
   };
 
+  console.log('Props libro:', libro);
+
   return (
     <dialog
       ref={dialogRef}
@@ -38,11 +48,20 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose, titulo, descripcion }) => {
       }}
     >
       <div className="modal-header">
-        <h4>Resultados</h4>
+        <h4>
+          Resultados
+        </h4>
       </div>
       <div className="modal-body">
-        <h5>{titulo}</h5>
-        <p>{descripcion}</p>
+        {libro.map(e => (
+          <div key={e.id}  style={ { marginBottom: '40px' } }>
+            <h5><b>Título:</b> {e.titulo}</h5>
+            <p><b>Descripción:</b> {e.descripcion}</p>
+            <p><b>Fecha de Publicación:</b> {e.fecha}</p>
+            <p><b>Autor:</b> {e.autor}</p>
+            <p><b>Categoría:</b> {e.categoria}</p>
+          </div>
+        ))}
       </div>
       <div className="modal-footer">
         <button className="close-btn" onClick={handleClose}>

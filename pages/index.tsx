@@ -2,9 +2,10 @@ import Box from "@/components/Box"
 import Link from "next/link"
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useState } from 'react'
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
 import apiService from "./api/apiService";
 import Modal from "@/components/Modal";
+import { format, getYear, getMonth, getDate } from 'date-fns'
 
 export default function Home () {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -28,6 +29,15 @@ export default function Home () {
     id: number;
     nombre: string;
   }
+
+  interface LibroContent {
+    id: number,
+    titulo: string,
+    descripcion: string,
+    fecha: string,
+    autor: string,
+    categoria: string
+  }
   
   type CategoriasResponse = Categoria[];
   
@@ -37,6 +47,8 @@ export default function Home () {
 
   const [titulo, setTitulo] = useState<string>('')
   const [descripcion, setDescripcion] = useState<string>('')
+  const [libroContent, setLibroContent] = useState<LibroContent[]>([]);
+
 
   const search = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -45,10 +57,28 @@ export default function Home () {
       try {
         const response = await apiService.getLibroPorTitulo(tituloSearch);
 
-        setTitulo(response.titulo)
-        setDescripcion(response.descripcion)
+        let newResponse: LibroContent[] = [];
 
-        openModal();
+        if (response.length > 0) {
+          response.forEach(e => {
+            const libro = {
+              id: e.id,
+              titulo: e.titulo,
+              descripcion: e.descripcion,
+              fecha: format(e.fecha, "dd/MM/yyyy"),
+              autor: e.autor,
+              categoria: e.categoria
+          }
+
+            newResponse.push(libro)
+          })
+
+          setLibroContent(newResponse);
+
+          openModal();
+        } else {
+          alert('La búsqueda no produjo ningún resultado.')
+        }
       }
       catch(err) {
         alert('Hubo un error al efectuar la búsqueda.');
@@ -59,18 +89,68 @@ export default function Home () {
         try {
           const response = await apiService.getLibroPorCategoria(categoria);
 
-          console.log('Categoria data:', response)
+          let newResponse: LibroContent[] = [];
 
-          setTitulo(response.titulo)
-          setDescripcion(response.descripcion)
+          if (response.length > 0) {
+            response.forEach(e => {
+              const libro = {
+                id: e.id,
+                titulo: e.titulo,
+                descripcion: e.descripcion,
+                fecha: format(e.fecha, "dd/MM/yyyy"),
+                autor: e.autor,
+                categoria: e.categoria
+            }
 
-          openModal();
+              newResponse.push(libro)
+            })
+
+            setLibroContent(newResponse);
+
+            openModal();
+          } else {
+            alert('La búsqueda no produjo ningún resultado.')
+          }
+          
         }
         catch(err) {
           alert('Hubo un error al efectuar la búsqueda.');
 
           console.log(err)
         }
+    }
+    else if (searchCriteria === 'fecha') {
+      try {
+        const response = await apiService.getLibrosPorFecha(fecha);
+
+        let newResponse: LibroContent[] = [];
+
+        if (response.length > 0) {
+          response.forEach(e => {
+            const libro = {
+              id: e.id,
+              titulo: e.titulo,
+              descripcion: e.descripcion,
+              fecha: format(e.fecha, "dd/MM/yyyy"),
+              autor: e.autor,
+              categoria: e.categoria
+          }
+
+            newResponse.push(libro)
+          })
+
+          setLibroContent(newResponse);
+
+          openModal();
+        } else {
+          alert('La búsqueda no produjo ningún resultado.')
+        }
+      }
+      catch(err) {
+        alert('Hubo un error al efectuar la búsqueda.');
+
+        console.log(err)
+      }
     }
   }
 
@@ -80,7 +160,7 @@ export default function Home () {
         const response = await fetch('http://localhost:5267/api/Categorias/GetAll');
     
         if (!response.ok) {
-          throw new Error('Error fetching categories');
+          console.log('No se pudieron cargar las categorías.')
         }
     
         const data: CategoriasResponse = await response.json();
@@ -99,7 +179,7 @@ export default function Home () {
 
     return (
         <div>
-            <Modal isOpen={isModalOpen} onClose={closeModal} titulo={titulo} descripcion={descripcion} />
+            <Modal isOpen={isModalOpen} onClose={closeModal} libro={libroContent} />
 
             <div className="searchDiv">
                 <Box />
@@ -130,10 +210,10 @@ export default function Home () {
                       </div>
 
                       {/* Date */}
-                      <input type="date" 
-                            className="form-control" 
-                            value={fecha}
-                            onChange={(e) => setFecha(e.target.value)} />
+                      <input type="date"
+                             className="customInputDate"
+                             value={fecha}
+                             onChange={(e) => setFecha(e.target.value)} />
                     </div>
 
                     <div style={ { display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -195,7 +275,8 @@ export default function Home () {
                   </div>
                 </form>
 
-                <Link href="/login" className="btn btn-primary" style={ { marginTop: '30px' } }>
+                <Link href="/login" className="btn btn-primary" style={ { marginTop: '80px', width: '150px', borderRadius: '10px' } }>
+                  <FontAwesomeIcon icon={ faRightToBracket } style={{ fontSize: '1rem', color: 'whitesmoke', marginRight: '10px' }} />
                   Iniciar sesión
                 </Link>
             </div>

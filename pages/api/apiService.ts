@@ -9,9 +9,12 @@ interface LoginResponse {
 }
 
 interface LibroResponse {
+  id: number,
   titulo: string,
   descripcion: string,
-  fechaPublicacion: string
+  fecha: string,
+  autor: string,
+  categoria: string
 }
 
 interface Categoria {
@@ -19,7 +22,8 @@ interface Categoria {
   nombre: string;
 }
 
-type CategoriasResponse = Categoria;
+
+type CategoriasResponse = Categoria[];
 
 class ApiService {
   private api: AxiosInstance;
@@ -39,34 +43,52 @@ class ApiService {
     return response.data;
   }
 
-  async getLibroPorTitulo(titulo: string): Promise<LibroResponse> {
+  async getLibroPorTitulo(titulo: string): Promise<LibroResponse[]> {
     try {
       const encodedTitulo = encodeURIComponent(titulo);
-      const response: AxiosResponse<LibroResponse> = 
+      const response: AxiosResponse<LibroResponse[]> = 
         await this.api.get(`Libros/GetByTitulo?titulo=${encodedTitulo}`);
+      
+      return response.data;
+  
+    } catch (error: any) {
+      console.log('Error:', error);
+      alert('Hubo un error en la búsqueda');
+      return [];
+    }
+  }
+  
+
+  async getLibroPorCategoria(categoria: string): Promise<LibroResponse[]> {
+    try {
+      const encodedCategoria = encodeURIComponent(categoria);
+      const response: AxiosResponse<LibroResponse[]> = 
+        await this.api.get(`Libros/GetByCategoria?categoria=${encodedCategoria}`);
+        
       return response.data;
     } catch (error) {
-      throw new Error('Hubo un error en la búsqueda.');
+      alert('Hubo un error en la búsqueda')
+      console.error('Error:', error);
+      return [];
     }
   }
 
-  async getLibroPorCategoria(categoria: string): Promise<LibroResponse> {
+  async getLibrosPorFecha(fecha: string): Promise<LibroResponse[]> {
+    const encodedFecha = encodeURIComponent(fecha);
     try {
-      const encodedCategoria = encodeURIComponent(categoria);
-      const response: AxiosResponse<LibroResponse> = 
-        await this.api.get(`Libros/GetByCategoria?categoria=${encodedCategoria}`);
+      const response: AxiosResponse<LibroResponse[]> = 
+        await this.api.get(`Libros/GetByFechaPublicacion?fecha=${encodedFecha}`);
       return response.data;
     } catch (error) {
-      throw new Error('Hubo un error en la búsqueda.');
+      alert('Hubo un error en la búsqueda')
+      console.error('Hubo un error en la búsqueda:', error);
+      return [];
     }
   }
 
   async getCategorias(): Promise<CategoriasResponse> {
     try {
       const response: AxiosResponse<CategoriasResponse> = await this.api.get(`Categorias/GetAll`);
-      
-      // console.log('Full Axios Response:', response); 
-  
       return response.data;
     } catch (error) {
       console.error('Hubo un error en la búsqueda:');
