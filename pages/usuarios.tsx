@@ -1,11 +1,14 @@
 import Navbar from "@/components/Navbar"
 import Box from "@/components/Box"
 import { useRouter } from 'next/router';
-import { ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle, faEdit, faTrashAlt, faTimesCircle } from '@fortawesome/free-solid-svg-icons';
 import React from "react";
 import { useForm, SubmitHandler } from 'react-hook-form'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import apiService from "./api/apiService";
+import { UsuarioPost } from "@/interfaces/UsuarioPost";
 
 export default function Usuarios() {
     const router = useRouter()
@@ -32,6 +35,7 @@ export default function Usuarios() {
 
     type UsuariosResponse= Usuario[];
     type RolesResponse = Rol[];
+    type UsuariosPostResponse = UsuarioPost[];
     
     const [usersList, setUsersList] = useState<UsuariosResponse>([]);
     const [rolesList, setRolesList] = useState<RolesResponse>([]);
@@ -41,7 +45,7 @@ export default function Usuarios() {
     const [nombre, setNombre] = useState("");
     const [email, setEmail] = useState("");
     const [rol, setRol] = useState(-1);
-    const [rolName, setRolName] = useState("");
+    // const [rolName, setRolName] = useState("");
     const [password, setPassword] = useState("");
     
     useEffect(() => {
@@ -54,7 +58,7 @@ export default function Usuarios() {
 
         async function getUsuarios(): Promise<UsuariosResponse> {
             try {
-              const response = await fetch('http://localhost:5267/api/Account/GetAll');
+              const response = await fetch('https://localhost:7191/api/Account/GetAll');
           
               if (!response.ok) {
                 console.log('No se pudieron cargar los usuarios.')
@@ -74,7 +78,7 @@ export default function Usuarios() {
 
         async function getRoles(): Promise<RolesResponse> {
             try {
-                const response = await fetch('http://localhost:5267/api/Roles/GetAll');
+                const response = await fetch('https://localhost:7191/api/Roles/GetAll');
 
                 if (!response.ok) {
                     console.log('No se pudieron cargar los roles.')
@@ -98,21 +102,6 @@ export default function Usuarios() {
         getRoles();
 
       }, [router]);
-
-    const handleRoleUpdate = (usuarioId: number, roldId: number) => {
-        console.log('rold Id', roldId);
-
-        for (let r: number = 0; r < usersList.length; r++) {
-            if (usersList[r].id === usuarioId) {
-                usersList[r].rolId = roldId;
-
-                console.log(usersList[r])
-                console.log(rolesList)
-
-                console.log (rolesList[usersList[r].rolId-1])
-            }
-        }
-    } 
       
     const handleEdit = (usuario: Usuario, index: number) => {
         setEditRow(index);
@@ -133,9 +122,64 @@ export default function Usuarios() {
     // Validation object
     const { register, handleSubmit, formState: { errors } } = useForm<IFormInput>();
 
-    const onSubmit: SubmitHandler<IFormInput> = (data) => {
-        console.log("Form data:", data);
+    const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+        try {
+            const user: UsuarioPost = {
+                nombre: data.nombre,
+                email: data.email,
+                password: data.password,
+                roldId: data.roldId
+            }
+
+            // const response = await apiService.saveUsuario(user);
+
+            const response = await fetch('https://localhost:7191/api/Account/CrearUsuario', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': localStorage.getItem('token')
+                },
+                body: JSON.stringify(user),
+            });
+
+            if (response.status !== 200) {
+                alert('No se pudo guardar el usuario.');
+                return;
+            }
+
+            const responseData: UsuariosPostResponse = await response.json()
+
+            setRolesList(data);
+
+            alert('El usuario ha sido guardado.')
+
+            return responseData;
+
+        }
+        catch(error) {
+            console.log(error)
+        }
+
     }
+
+    // const handleRoleUpdate = (usuarioId: number, roldId: number) => {
+       
+    // } 
+
+    // const guardarUsuario = (usuarioId: number) => {
+    //     for (let r: number = 0; r < usersList.length; r++) {
+    //         let newUsers: UsuariosResponse = [];
+    //         newUsers = usersList;
+
+    //         if (newUsers[r].id === usuarioId) {
+    //             newUsers[r].rolId = rol;
+    //         }
+
+    //         setUsersList(newUsers);
+
+    //         alert('El usuario ha sido guardado')
+    //     }
+    // }
 
     return (
         <div>
@@ -220,10 +264,20 @@ export default function Usuarios() {
                                                         className="customDropdown" 
                                                         name="rol" 
                                                         id={`rol-${usuario.id}`}
-                                                        value={usuario.rolId} 
-                                                        onChange={(e) => { handleRoleUpdate(usuario.id, Number(e.target.value)) }}>
+                                                        value={rol}
+                                                        {...register('rol')}
+                                                        onChange={(e) => { setRol(Number(e.target.value)) }}>
 
-                                                        {rolesList.map(item => (
+                                                        {rolesList.filter(item => item.id === rol)  
+                                                                  .map(item => (
+
+                                                            // Selected
+                                                            <option key={item.id} value={item.id}>
+                                                                {item.nombre}
+                                                            </option>
+                                                        ))}
+                                                        {rolesList.filter(item => item.id !== rol)  
+                                                                  .map(item => (
                                                             <option key={item.id} value={item.id}>
                                                                 {item.nombre}
                                                             </option>
@@ -256,7 +310,7 @@ export default function Usuarios() {
                                                         value={ password } 
                                                         style={ { textAlign: 'center' } }  
                                                         {...register('contrasena', {
-                                                            required: "El campo 'contraseña' es requerida",
+                                                            required: "El campo 'contraseña' es requerido",
                                                             minLength: {
                                                                 value: 8,
                                                                 message: 'La contraseña debe tener un mínimo de 8 caracteres.'
@@ -273,7 +327,9 @@ export default function Usuarios() {
                                                     </div>
                                                 </div>
                                                 
-                                                ) : <p>{ usuario.contrasena } ******** </p>
+                                                ) : <p>
+                                                        { usuario.contrasena } ******** 
+                                                    </p>
                                             }
                                         </td>
                                         <td>
@@ -288,7 +344,10 @@ export default function Usuarios() {
                                                     </button>
 
                                                     {/* Submit */}
-                                                    <button type="submit" className="btn customButton" style={ {backgroundColor: '#15bf70', color: 'white' } }>
+                                                    <button type="submit" 
+                                                            className="btn customButton" 
+                                                            style={ {backgroundColor: '#15bf70', 
+                                                            color: 'white' } } >
                                                         <FontAwesomeIcon icon={ faCheckCircle } style={{ fontSize: '1rem', color: 'whitesmoke', marginRight: '5px' }} />
                                                         Guardar
                                                     </button>

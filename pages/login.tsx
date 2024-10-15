@@ -2,6 +2,7 @@
 import Box from "@/components/Box";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLock, faKey } from '@fortawesome/free-solid-svg-icons';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import Link from 'next/link';
 import { useState, useEffect } from 'react'
 import apiService from "./api/apiService";
@@ -14,6 +15,7 @@ export default function Login() {
   const router = useRouter();
 
   const parseToken = () => {
+    // eslint-disable-next-line prefer-const
     let token = localStorage.getItem('token') + ''
 
     const base64Url = token.split('.')[1];
@@ -43,10 +45,13 @@ export default function Login() {
 
       localStorage.setItem('role', claims.role)
 
+      console.log(claims)
+
       router.push('/home');
     }
     catch(err) {
       alert('Login fallido. Verifique sus credenciales.');
+      console.log(err)
     }
   }
 

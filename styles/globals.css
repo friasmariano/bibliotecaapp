@@ -65,7 +65,7 @@ a {
 
 .homeDiv {
   background-color: whitesmoke;
-  margin-top: 15%;
+  margin-top: 15vh;
   width: 80%;
   height: 500px;
   margin-left: auto;
@@ -233,7 +233,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 .customButton {
-  width: 150px;
+  width: 120px;
+
+  font-size: 0.5rem;
 }
 
 .errors {

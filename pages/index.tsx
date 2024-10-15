@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { faSearch, faRightToBracket } from '@fortawesome/free-solid-svg-icons';
 import apiService from "./api/apiService";
 import Modal from "@/components/Modal";
-import { format, getYear, getMonth, getDate } from 'date-fns'
+import { format } from 'date-fns'
 
 export default function Home () {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -15,6 +15,9 @@ export default function Home () {
   const openModal = () => {
     setIsModalOpen(true);
     setResumen(responseData);
+    console.log(resumen)
+
+    setResponseData('');
   };
 
   const closeModal = () => {
@@ -45,8 +48,8 @@ export default function Home () {
 
   const [searchCriteria, setSearchCriteria] = useState<string>('')
 
-  const [titulo, setTitulo] = useState<string>('')
-  const [descripcion, setDescripcion] = useState<string>('')
+  // const [titulo, setTitulo] = useState<string>('')
+  // const [descripcion, setDescripcion] = useState<string>('')
   const [libroContent, setLibroContent] = useState<LibroContent[]>([]);
 
 
@@ -57,6 +60,7 @@ export default function Home () {
       try {
         const response = await apiService.getLibroPorTitulo(tituloSearch);
 
+        // eslint-disable-next-line prefer-const
         let newResponse: LibroContent[] = [];
 
         if (response.length > 0) {
@@ -89,6 +93,7 @@ export default function Home () {
         try {
           const response = await apiService.getLibroPorCategoria(categoria);
 
+          // eslint-disable-next-line prefer-const
           let newResponse: LibroContent[] = [];
 
           if (response.length > 0) {
@@ -123,7 +128,7 @@ export default function Home () {
       try {
         const response = await apiService.getLibrosPorFecha(fecha);
 
-        let newResponse: LibroContent[] = [];
+        const newResponse: LibroContent[] = [];
 
         if (response.length > 0) {
           response.forEach(e => {
@@ -157,7 +162,7 @@ export default function Home () {
   useEffect(() => {
     async function getCategorias(): Promise<CategoriasResponse> {
       try {
-        const response = await fetch('http://localhost:5267/api/Categorias/GetAll');
+        const response = await fetch('https://localhost:7191/api/Categorias/GetAll');
     
         if (!response.ok) {
           console.log('No se pudieron cargar las categorías.')

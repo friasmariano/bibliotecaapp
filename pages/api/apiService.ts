@@ -1,5 +1,6 @@
 
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import { UsuarioPost } from '@/interfaces/UsuarioPost';
 
 interface LoginResponse {
   id: number;
@@ -60,7 +61,7 @@ class ApiService {
       
       return response.data;
   
-    } catch (error: any) {
+    } catch (error) {
       console.log('Error:', error);
       alert('Hubo un error en la búsqueda');
       return [];
@@ -114,8 +115,31 @@ class ApiService {
     }
   }
 
+  async saveUsuario(userData: UsuarioPost): Promise<UsuariosResponse[]> {
+    const token = localStorage.getItem('token')
+
+    try {
+      const response: AxiosResponse<UsuariosResponse[]> = await this.api.post(`Account`, {
+        nombre: userData.nombre,
+        email: userData.email,
+        password: userData.password,
+        roldId: userData.roldId
+      }, {
+        headers: {
+          Authorization: token
+        }
+      });
+
+      return response.data;
+    }
+    catch (error) {
+      console.error('Hubo un error al guardar el usuario', error);
+      return [];
+    }
+  }
+
 }
 
-const apiService = new ApiService('http://localhost:5267/api');
+const apiService = new ApiService('https://localhost:7191/api/');
 
 export default apiService;
