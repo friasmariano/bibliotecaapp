@@ -66,7 +66,6 @@ class ApiService {
       return [];
     }
   }
-  
 
   async getLibroPorCategoria(categoria: string): Promise<LibroResponse[]> {
     try {

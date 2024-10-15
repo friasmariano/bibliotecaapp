@@ -54,12 +54,12 @@ export default function Home () {
                     }
                     {
                         showUsuariosButton ? (
-                                <button className="btn btn-primary homeButton">
-                                    <Link href='/usuarios'>
-                                        <FontAwesomeIcon icon={ faUserAlt } style={{ fontSize: '1rem', color: 'whitesmoke' }} />
-                                        <span className="link" style={ { marginLeft: '5px' } }>Gestionar Usuarios</span>
-                                    </Link>
-                                </button>
+                            <Link href='/usuarios' 
+                                  className="" 
+                                  style={ { padding: '20px', backgroundColor: '#007bff', textDecoration: 'none', borderRadius: '10px' } }>
+                                <FontAwesomeIcon icon={ faUserAlt } style={{ fontSize: '1rem', color: 'whitesmoke' }} />
+                                <span className="link" style={ { marginLeft: '5px' } }>Gestionar Usuarios</span>
+                            </Link>
                             ) : ''
                     }
                     
