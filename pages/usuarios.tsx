@@ -24,7 +24,7 @@ export default function Usuarios() {
     interface IFormInput {
         email: string,
         nombre: string,
-        rol: string,
+        rol: number,
         contrasena: string
     }
 
@@ -58,7 +58,7 @@ export default function Usuarios() {
 
         async function getUsuarios(): Promise<UsuariosResponse> {
             try {
-              const response = await fetch('https://localhost:7191/api/Account/GetAll');
+              const response = await fetch('http://localhost:5267/api/Account/GetAll');
           
               if (!response.ok) {
                 console.log('No se pudieron cargar los usuarios.')
@@ -78,7 +78,7 @@ export default function Usuarios() {
 
         async function getRoles(): Promise<RolesResponse> {
             try {
-                const response = await fetch('https://localhost:7191/api/Roles/GetAll');
+                const response = await fetch('http://localhost:5267/api/Roles/GetAll');
 
                 if (!response.ok) {
                     console.log('No se pudieron cargar los roles.')
@@ -127,33 +127,26 @@ export default function Usuarios() {
             const user: UsuarioPost = {
                 nombre: data.nombre,
                 email: data.email,
-                password: data.password,
-                roldId: data.roldId
+                password: data.contrasena,
+                roldId: data.rol
             }
 
-            // const response = await apiService.saveUsuario(user);
+            const response = await apiService.saveUsuario(user);
 
-            const response = await fetch('https://localhost:7191/api/Account/CrearUsuario', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': localStorage.getItem('token')
-                },
-                body: JSON.stringify(user),
-            });
+            // const response = await fetch('https://localhost:5267/api/Account/CrearUsuario', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //         'Authorization': localStorage.getItem('token')
+            //     },
+            //     body: JSON.stringify(user),
+            // });
 
-            if (response.status !== 200) {
-                alert('No se pudo guardar el usuario.');
-                return;
-            }
-
-            const responseData: UsuariosPostResponse = await response.json()
-
-            setRolesList(data);
+            // const responseData: UsuariosPostResponse = await response.json();
 
             alert('El usuario ha sido guardado.')
 
-            return responseData;
+            return response;
 
         }
         catch(error) {
@@ -162,9 +155,9 @@ export default function Usuarios() {
 
     }
 
-    // const handleRoleUpdate = (usuarioId: number, roldId: number) => {
+    const handleRoleUpdate = (usuarioId: number, roldId: number) => {
        
-    // } 
+    } 
 
     // const guardarUsuario = (usuarioId: number) => {
     //     for (let r: number = 0; r < usersList.length; r++) {
@@ -261,8 +254,7 @@ export default function Usuarios() {
                                         <td>
                                             { editRow === index ? (
                                                 <select 
-                                                        className="customDropdown" 
-                                                        name="rol" 
+                                                        className="customDropdown"
                                                         id={`rol-${usuario.id}`}
                                                         value={rol}
                                                         {...register('rol')}
@@ -288,7 +280,7 @@ export default function Usuarios() {
 
                                                 <select 
                                                         className="customDropdown" 
-                                                        name="rol" 
+                                                        name="rol2" 
                                                         id={`rol-${usuario.id}`}
                                                         value={usuario.rolId} 
                                                         onChange={(e) => { handleRoleUpdate(usuario.id, Number(e.target.value)) }}

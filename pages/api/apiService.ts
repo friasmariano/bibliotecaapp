@@ -140,6 +140,6 @@ class ApiService {
 
 }
 
-const apiService = new ApiService('https://localhost:7191/api/');
+const apiService = new ApiService('http://localhost:5267/api/');
 
 export default apiService;
