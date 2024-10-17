@@ -14,10 +14,10 @@ export default function Usuarios() {
     const router = useRouter()
 
     interface Usuario {
-        id: number,
+        id: string,
         nombre: string,
         email: string,
-        rolId: number,
+        rolId: string,
         contrasena: string
     }
 
@@ -29,8 +29,8 @@ export default function Usuarios() {
     }
 
     interface Rol {
-        id: number,
-        nombre: string
+        id: string,
+        name: string
     }
 
     type UsuariosResponse= Usuario[];
@@ -44,7 +44,7 @@ export default function Usuarios() {
 
     const [nombre, setNombre] = useState("");
     const [email, setEmail] = useState("");
-    const [rol, setRol] = useState(-1);
+    const [rol, setRol] = useState("");
     // const [rolName, setRolName] = useState("");
     const [password, setPassword] = useState("");
     
@@ -78,7 +78,7 @@ export default function Usuarios() {
 
         async function getRoles(): Promise<RolesResponse> {
             try {
-                const response = await fetch('http://localhost:5267/api/Roles/GetAll');
+                const response = await fetch('http://localhost:5267/api/Account/GetRoles');
 
                 if (!response.ok) {
                     console.log('No se pudieron cargar los roles.')
@@ -155,7 +155,7 @@ export default function Usuarios() {
 
     }
 
-    const handleRoleUpdate = (usuarioId: number, roldId: number) => {
+    const handleRoleUpdate = (usuarioId: string, roldId: string) => {
        
     } 
 
@@ -258,20 +258,20 @@ export default function Usuarios() {
                                                         id={`rol-${usuario.id}`}
                                                         value={rol}
                                                         {...register('rol')}
-                                                        onChange={(e) => { setRol(Number(e.target.value)) }}>
+                                                        onChange={(e) => { setRol(e.target.value) }}>
 
                                                         {rolesList.filter(item => item.id === rol)  
                                                                   .map(item => (
 
                                                             // Selected
                                                             <option key={item.id} value={item.id}>
-                                                                {item.nombre}
+                                                                {item.name}
                                                             </option>
                                                         ))}
                                                         {rolesList.filter(item => item.id !== rol)  
                                                                   .map(item => (
                                                             <option key={item.id} value={item.id}>
-                                                                {item.nombre}
+                                                                {item.name}
                                                             </option>
                                                         ))}
                                                 </select>
@@ -283,12 +283,12 @@ export default function Usuarios() {
                                                         name="rol2" 
                                                         id={`rol-${usuario.id}`}
                                                         value={usuario.rolId} 
-                                                        onChange={(e) => { handleRoleUpdate(usuario.id, Number(e.target.value)) }}
+                                                        onChange={(e) => { handleRoleUpdate(usuario.id, e.target.value) }}
                                                         disabled>
 
                                                         {rolesList.map(item => (
                                                             <option key={item.id} value={item.id}>
-                                                                {item.nombre}
+                                                                {item.name}
                                                             </option>
                                                         ))}
                                                 </select>

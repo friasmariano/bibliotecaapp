@@ -19,13 +19,13 @@ export default function Navbar () {
     useEffect(() => {
         const role = localStorage.getItem('role')
 
-        if (role === "Administrador") {
+        if (role === "Admin") {
             setShowUsuariosButton(true);
         } else {
             setShowUsuariosButton(false);
         }
 
-        if (role === "Bibliotecario") {
+        if (role === "Librarian") {
             setShowLibrosButton(true);
         } else {
             setShowLibrosButton(false);
